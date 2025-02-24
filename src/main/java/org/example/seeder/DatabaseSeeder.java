@@ -60,15 +60,21 @@ public class DatabaseSeeder {
         List<CategoryEntity> categories = categoryRepository.findAll();
         if (categories.isEmpty()) return;
 
+        var laptop1 = fileService.load("https://artline.ua/storage/images/products/28911/gallery/289038/600_gallery_1724087594553261_0.webp");
+        var laptop2 = fileService.load("https://images.prom.ua/5158038028_w600_h600_5158038028.jpg");
+        var shirt1 = fileService.load("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQouqjUKP9yx6QOw_x8gSj_bFfMBJ3qW-BRHw&s");
+        var shirt2 = fileService.load("https://freshcleantees.com/cdn/shop/files/CREWNECKSSlate_737x980.jpg?v=1714780774");
+        var novel1 = fileService.load("https://cdn-abelk.nitrocdn.com/QuXiuZZczpPTFNXhRoWZCpgpgjRNrrzw/assets/images/optimized/rev-90e158c/clippings-me-blog.imgix.net/blog/wp-content/uploads/2021/05/7732bee1b22ab9e27826c642cc9ce465.Depositphotos_54615585_s-2019.jpg");
+
         ProductEntity laptop = createProduct("Laptop", "High-performance laptop", 1200.0, categories.get(0));
         ProductEntity shirt = createProduct("T-Shirt", "Cotton t-shirt", 20.0, categories.get(1));
         ProductEntity novel = createProduct("Fantasy Novel", "Bestselling fantasy novel", 15.0, categories.get(2));
 
         productRepository.saveAll(List.of(laptop, shirt, novel));
 
-        seedProductImages(laptop, List.of("laptop1.jpg", "laptop2.jpg"));
-        seedProductImages(shirt, List.of("shirt1.jpg", "shirt2.jpg"));
-        seedProductImages(novel, List.of("novel1.jpg"));
+        seedProductImages(laptop, List.of(laptop1, laptop2));
+        seedProductImages(shirt, List.of(shirt1, shirt2));
+        seedProductImages(novel, List.of(novel1));
     }
 
     private ProductEntity createProduct(String name, String description, Double price, CategoryEntity category) {
@@ -90,7 +96,7 @@ public class DatabaseSeeder {
 
     private ProductImageEntity createProductImage(String imageUrl, ProductEntity product) {
         ProductImageEntity image = new ProductImageEntity();
-        image.setImageUrl(imageUrl);
+        image.setName(imageUrl);
         image.setPriority(1);
         image.setProduct(product);
         return image;

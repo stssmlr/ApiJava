@@ -13,7 +13,7 @@ public class ProductImageEntity {
     private Integer id;
 
     @Column(length = 255, nullable = false)
-    private String imageUrl;
+    private String name;
 
     @Column(nullable = false)
     private Integer priority;

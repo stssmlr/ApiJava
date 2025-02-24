@@ -5,6 +5,9 @@ import org.example.dto.category.CategoryEditDTO;
 import org.example.dto.category.CategoryItemDTO;
 import org.example.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,9 +26,10 @@ public class CategoryController {
     }
 
     // Створити нову категорію
-    @PostMapping
-    public CategoryItemDTO create(@RequestBody CategoryCreateDTO dto) {
-        return categoryService.create(dto);
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<CategoryItemDTO> create(@ModelAttribute CategoryCreateDTO model) {
+        var result = categoryService.create(model);
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
     // Оновити категорію (з можливістю зміни зображення)

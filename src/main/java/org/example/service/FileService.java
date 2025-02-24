@@ -84,21 +84,11 @@ public class FileService {
         }
     }
 
-    public String replace(String oldFileName, String newFileUrl) {
-        // If the new file URL is empty or invalid, return the old file name
-        if (newFileUrl == null || newFileUrl.isEmpty()) {
+    public String replace(String oldFileName, MultipartFile newFile) {
+        var newFileName = load(newFile);
+        if (newFileName == ""){
             return oldFileName;
         }
-
-        // Process the new image URL to save it
-        String newFileName = load(newFileUrl);  // Assuming load() works with URLs
-
-        // If loading fails, return the old file name
-        if (newFileName.isEmpty()) {
-            return oldFileName;
-        }
-
-        // Remove the old file
         remove(oldFileName);
         return newFileName;
     }

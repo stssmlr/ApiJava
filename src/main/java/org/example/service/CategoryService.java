@@ -38,8 +38,8 @@ public class CategoryService implements ICategoryService {
         entity.setCreationTime(LocalDateTime.now());
 
         // Handle the image file if present
-        if (model.getImage() != null && !model.getImage().isEmpty()) {
-            String imageFileName = fileService.load(model.getImage());
+        if (model.getImageFile() != null ) {
+            String imageFileName = fileService.load(model.getImageFile());
             if (!imageFileName.isEmpty()) {
                 entity.setImage(imageFileName);
             }
@@ -67,10 +67,11 @@ public class CategoryService implements ICategoryService {
         }
 
         // Handle image replacement if new image is provided
-        if (dto.getImage() != null && !dto.getImage().isBlank()) {
-            String newImageFileName = fileService.replace(entity.getImage(), dto.getImage());
+        if (dto.getImageFile() != null && !dto.getImageFile().isEmpty()) {
+            String newImageFileName = fileService.replace(entity.getImage(), dto.getImageFile());
             entity.setImage(newImageFileName);
         }
+
 
         // Save updated category entity
         categoryRepository.save(entity);

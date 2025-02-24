@@ -10,6 +10,6 @@ public interface IProductService {
     List<ProductItemDTO> getList();
     ProductItemDTO getById(Integer productId);
     ProductItemDTO create(ProductCreateDTO dto);
-    ProductItemDTO edit(ProductEditDTO dto);
+    ProductItemDTO edit(Integer id, ProductEditDTO dto);
     void delete(Integer productId);
 }
