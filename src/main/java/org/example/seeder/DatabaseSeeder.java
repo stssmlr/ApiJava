@@ -66,6 +66,7 @@ public class DatabaseSeeder {
         var shirt2 = fileService.load("https://freshcleantees.com/cdn/shop/files/CREWNECKSSlate_737x980.jpg?v=1714780774");
         var novel1 = fileService.load("https://cdn-abelk.nitrocdn.com/QuXiuZZczpPTFNXhRoWZCpgpgjRNrrzw/assets/images/optimized/rev-90e158c/clippings-me-blog.imgix.net/blog/wp-content/uploads/2021/05/7732bee1b22ab9e27826c642cc9ce465.Depositphotos_54615585_s-2019.jpg");
 
+
         ProductEntity laptop = createProduct("Laptop", "High-performance laptop", 1200.0, categories.get(0));
         ProductEntity shirt = createProduct("T-Shirt", "Cotton t-shirt", 20.0, categories.get(1));
         ProductEntity novel = createProduct("Fantasy Novel", "Bestselling fantasy novel", 15.0, categories.get(2));

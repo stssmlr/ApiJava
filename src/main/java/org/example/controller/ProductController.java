@@ -1,8 +1,7 @@
 package org.example.controller;
 
-import org.example.dto.product.ProductCreateDTO;
-import org.example.dto.product.ProductEditDTO;
 import org.example.dto.product.ProductItemDTO;
+import org.example.dto.product.ProductPostDTO;
 import org.example.entites.ProductEntity;
 import org.example.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +30,16 @@ public class ProductController {
     }
 
     @PostMapping(consumes = MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ProductEntity> createProduct(@ModelAttribute ProductCreateDTO product) {
+    public ResponseEntity<ProductEntity> createProduct(@ModelAttribute ProductPostDTO product) {
         ProductEntity createdProduct = productService.createProduct(product);
         return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/{id}", consumes = MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ProductItemDTO> updateProduct(@ModelAttribute ProductEditDTO product) {
-        ProductItemDTO updatedProduct = productService.edit(product);
-        return ResponseEntity.ok(updatedProduct);
+    @PutMapping(path = "/{id}", consumes = MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> updateProduct(@PathVariable Integer id, @ModelAttribute ProductPostDTO product) {
+        return productService.updateProduct(id, product)
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")

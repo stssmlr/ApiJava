@@ -1,13 +1,13 @@
 package org.example.service;
 
 import lombok.AllArgsConstructor;
-
 import org.example.dto.category.CategoryCreateDTO;
 import org.example.dto.category.CategoryEditDTO;
 import org.example.dto.category.CategoryItemDTO;
 import org.example.entites.CategoryEntity;
 import org.example.mapper.ICategoryMapper;
 import org.example.repository.ICategoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,7 +15,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class CategoryService implements ICategoryService {
+public class CategoryService {
     private final ICategoryRepository categoryRepository;
     private final ICategoryMapper categoryMapper;
     private final FileService fileService;
@@ -24,65 +24,55 @@ public class CategoryService implements ICategoryService {
         return categoryMapper.toDto(categoryRepository.findAll());
     }
 
-    @Override
-    public CategoryItemDTO getCategoryById(Integer categoryId) {
-        var entity = categoryRepository.findById(categoryId)
+    public CategoryItemDTO getById(int id) {
+        var entity = categoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
-        return categoryMapper.categoryItemDTO(entity);
+        return categoryMapper.toDto(entity);
     }
 
-    @Override
-    public CategoryItemDTO create(CategoryCreateDTO model) {
-        // Map DTO to Entity
-        CategoryEntity entity = categoryMapper.categoryEntityByCategoryCreateDTO(model);
+    public CategoryEntity create(CategoryCreateDTO dto) {
+        CategoryEntity entity = new CategoryEntity();
         entity.setCreationTime(LocalDateTime.now());
-
-        // Handle the image file if present
-        if (model.getImageFile() != null ) {
-            String imageFileName = fileService.load(model.getImageFile());
-            if (!imageFileName.isEmpty()) {
-                entity.setImage(imageFileName);
-            }
-        }
-
-        // Save the entity
+        entity.setName(dto.getName());
+        entity.setDescription(dto.getDescription());
+        var imageName = fileService.load(dto.getImage());
+        entity.setImage(imageName);
         categoryRepository.save(entity);
-
-        // Map back to DTO and return
-        return categoryMapper.categoryItemDTO(entity);
+        return entity;
     }
 
-    @Override
-    public CategoryItemDTO edit(CategoryEditDTO dto) {
-        // Find existing category by ID
+//    public CategoryEntity edit(CategoryEditDTO dto) {
+//        CategoryEntity entity = categoryRepository.findById(dto.getId()).get();
+//        entity.setName(dto.getName());
+//        entity.setDescription(dto.getDescription());
+//        entity.setImage(dto.getImage());
+//        categoryRepository.save(entity);
+//        return entity;
+//    }
+
+    public CategoryEntity edit(CategoryEditDTO dto) {
         CategoryEntity entity = categoryRepository.findById(dto.getId())
                 .orElseThrow(() -> new RuntimeException("Category not found"));
 
-        // Update fields if non-null and non-blank
         if (dto.getName() != null && !dto.getName().isBlank()) {
             entity.setName(dto.getName());
         }
         if (dto.getDescription() != null && !dto.getDescription().isBlank()) {
             entity.setDescription(dto.getDescription());
         }
-
-        // Handle image replacement if new image is provided
-        if (dto.getImageFile() != null && !dto.getImageFile().isEmpty()) {
-            String newImageFileName = fileService.replace(entity.getImage(), dto.getImageFile());
-            entity.setImage(newImageFileName);
+        if (dto.getImage() != null) {
+            fileService.remove(entity.getImage());
+            var imageName = fileService.load(dto.getImage());
+            entity.setImage(imageName);
         }
 
-
-        // Save updated category entity
-        categoryRepository.save(entity);
-
-        // Return updated category as DTO
-        return categoryMapper.categoryItemDTO(entity);
+        return categoryRepository.save(entity);
     }
 
-    public void delete(Integer categoryId) {
-        CategoryEntity entity = categoryRepository.findById(categoryId)
+    public void delete(int id) {
+        CategoryEntity entity = categoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
+        fileService.remove(entity.getImage());
         categoryRepository.delete(entity);
     }
 }

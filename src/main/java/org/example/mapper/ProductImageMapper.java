@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface IProductImageMapper {
+public interface ProductImageMapper {
     @Mapping(target = "productId", source = "product.id")
     ProductImageDto toDto(ProductImageEntity image);
     List<ProductImageDto> toDto(Iterable<ProductImageEntity> product);
